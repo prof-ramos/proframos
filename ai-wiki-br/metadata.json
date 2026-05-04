@@ -1,6 +1,9 @@
 {
-  "name": "ai.wiki.br - IA para Concursos Públicos",
-  "description": "Acelerando sua aprovação em concursos públicos com Inteligência Artificial. Biblioteca de prompts para estudos, discursivas e prática jurídica.",
-  "requestFramePermissions": [],
-  "majorCapabilities": []
+  "name": "ai.wiki.br",
+  "version": "0.1.0",
+  "description": "A biblioteca definitiva de prompts de IA para concurseiros e profissionais do direito.",
+  "author": "Prof. Gabriel Ramos <gabriel@asof.org.br>",
+  "license": "MIT",
+  "repository": "https://github.com/proframos/ai-wiki-br",
+  "keywords": ["ia", "concursos", "direito", "prompts", "gemini", "chatgpt"]
 }
