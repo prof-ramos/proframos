@@ -24,3 +24,8 @@ dist-ssr
 *.sln
 *.sw?
 .worktrees/
+crabbit.txt
+.env.*
+coverage/
+.cache/
+.vite/
