@@ -1,5 +1,5 @@
-import { Category, Prompt } from './types';
-import { Scale, BookOpen, Briefcase, FileText, MessageSquare, ShieldCheck, GraduationCap } from 'lucide-react';
+import { Category, Complexity, Prompt } from './types';
+import { Scale, Briefcase, FileText, MessageSquare, ShieldCheck, GraduationCap } from 'lucide-react';
 import React from 'react';
 
 // Mapping categories to Icons
@@ -20,7 +20,7 @@ export const PROMPTS: Prompt[] = [
     content: "Role: Você é um Mentor Especialista em aprovação para Concursos de Alto Nível.\n\nContexto: O usuário precisa de um plano de estudos otimizado e realista.\n\nVariáveis de Entrada:\n{CARGO} = [INSERIR CARGO]\n{BANCA} = [INSERIR BANCA, ex: FGV, Cebraspe]\n{HORAS_DIA} = [INSERIR HORAS LÍQUIDAS]\n{PONTO_FRACO} = [INSERIR MATÉRIA DIFICULDADE]\n\nTarefa: Crie um cronograma semanal em formato de Tabela Markdown.\n\nInstruções:\n1. Distribua as matérias do edital priorizando o peso da {BANCA}.\n2. Aloque mais tempo para {PONTO_FRACO}.\n3. Inclua sessões explícitas de 'Revisão Ativa' e 'Resolução de Questões'.\n4. O tom deve ser motivador mas disciplinado.",
     category: Category.EXAM_PREP,
     tags: ['Produtividade', 'Planejamento', 'Role Prompting'],
-    complexity: 'Intermediário',
+    complexity: Complexity.Intermediário,
     isNew: true,
   },
   {
@@ -30,7 +30,7 @@ export const PROMPTS: Prompt[] = [
     content: "System: Aja como um examinador rigoroso da banca Cebraspe. Sua função é encontrar erros e atribuir nota baseada em espelhos de correção oficiais.\n\nEntrada do Usuário: Redação sobre '[TEMA]'.\nTexto: [COLAR REDAÇÃO AQUI]\n\nTarefa: Avalie o texto seguindo estritamente estes critérios:\n1. Apresentação (Legibilidade/Margens) - [0-2 pontos]\n2. Estrutura Textual (Coesão/Coerência) - [0-5 pontos]\n3. Conteúdo Jurídico (Fundamentação) - [0-13 pontos]\n\nSaída Esperada:\n- Nota Final: X/20\n- Lista de Erros (Linha X: Erro Y)\n- Reescreva o parágrafo mais fraco para torná-lo excelente.",
     category: Category.EXAM_PREP,
     tags: ['Discursiva', 'Correção', 'System Prompting'],
-    complexity: 'Avançado',
+    complexity: Complexity.Avançado,
     isNew: true,
   },
   {
@@ -40,7 +40,7 @@ export const PROMPTS: Prompt[] = [
     content: "Tarefa: Criar 3 questões inéditas estilo 'Certo ou Errado' baseadas na jurisprudência do STF/STJ.\n\nExemplo (One-Shot):\nContexto: Direito Administrativo.\nQuestão: A responsabilidade civil do Estado por atos omissivos é, em regra, objetiva.\nGabarito: ERRADO. Justificativa: Em regra, a responsabilidade por omissão é subjetiva (teoria da culpa administrativa), salvo em casos de garante.\n\nAgora, gere 3 questões novas seguindo o mesmo padrão acima sobre o tema: [INSERIR TEMA, ex: Controle de Constitucionalidade].",
     category: Category.EXAM_PREP,
     tags: ['Jurisprudência', 'Few-Shot', 'Simulado'],
-    complexity: 'Intermediário',
+    complexity: Complexity.Intermediário,
   },
   {
     id: '103',
@@ -49,7 +49,7 @@ export const PROMPTS: Prompt[] = [
     content: "Transforme os artigos [INSERIR ARTIGOS] da Lei [NOME DA LEI] em Flashcards de memorização.\n\nInstrução de Formato (Output Schema):\nPara cada artigo, gere estritamente o seguinte formato:\n\nCard X:\nQ: [Pergunta que exige completar uma lacuna ou conceito chave]\nR: [Resposta com a letra da lei, destacando em NEGRITO a palavra chave]\n\nDica: Foque em prazos, exceções e palavras como 'salvo', 'exceto', 'imprescritível'.",
     category: Category.EXAM_PREP,
     tags: ['Memorização', 'Output Schema', 'Anki'],
-    complexity: 'Iniciante',
+    complexity: Complexity.Iniciante,
   },
   {
     id: '1',
@@ -58,7 +58,7 @@ export const PROMPTS: Prompt[] = [
     content: "Role: Advogado Sênior.\nTarefa: Analisar a peça processual a seguir e gerar um resumo executivo.\nTexto: [COLAR PEÇA AQUI]\n\nVamos pensar passo a passo (Chain of Thought):\n1. Primeiro, identifique quem são as partes e qual é o tipo de ação.\n2. Em seguida, extraia os 3 principais argumentos jurídicos da causa de pedir.\n3. Depois, liste os pedidos liminares e de mérito.\n4. Por fim, verifique se há preliminares (tempestividade, legitimidade).\n\nSaída: Gere apenas o resumo final estruturado em tópicos com base no raciocínio acima.",
     category: Category.ANALYSIS,
     tags: ['Produtividade', 'CoT', 'Resumo'],
-    complexity: 'Intermediário',
+    complexity: Complexity.Intermediário,
   },
   {
     id: '2',
@@ -67,7 +67,7 @@ export const PROMPTS: Prompt[] = [
     content: "Contexto: Estamos redigindo um Contrato de Prestação de Serviços de Software (SaaS) B2B. O contratante é uma multinacional rigorosa com Compliance.\n\nTarefa: Redija uma Cláusula de Rescisão e Confidencialidade.\n\nRestrições e Instruções:\n- Use linguagem formal, mas clara.\n- A multa rescisória deve ser proporcional ao tempo restante.\n- Inclua previsão expressa sobre a LGPD.\n- NÃO use juridiquês arcaico (ex: evite 'outrossim', 'destarte').\n\nGere a cláusula agora.",
     category: Category.LEGAL_DRAFTING,
     tags: ['Contratos', 'Contextual', 'Redação'],
-    complexity: 'Avançado',
+    complexity: Complexity.Avançado,
   },
   {
     id: '5',
@@ -76,7 +76,7 @@ export const PROMPTS: Prompt[] = [
     content: "Instrução: Organize a lista de tarefas abaixo em uma Matriz de Prioridade (Urgente vs Importante).\n\nDados de entrada:\n[COLAR LISTA DE PRAZOS E TAREFAS AQUI]\n\nSaída:\nTabela com as colunas: [Tarefa] | [Prazo Fatal] | [Prioridade Sugerida] | [Ação Imediata].",
     category: Category.ADMINISTRATIVE,
     tags: ['Gestão', 'Zero-Shot', 'Organização'],
-    complexity: 'Iniciante',
+    complexity: Complexity.Iniciante,
   },
   {
     id: '6',
@@ -85,7 +85,7 @@ export const PROMPTS: Prompt[] = [
     content: "Tarefa: Analisar abusividade em cláusula de locação.\n\nStep-Back (Passo para trás): Primeiro, relembre e liste brevemente os princípios fundamentais da Lei do Inquilinato (Lei 8.245/91) que protegem o locatário contra exigências excessivas.\n\nAnálise: Com base nesses princípios listados acima, analise a seguinte cláusula e diga se ela é NULA ou VÁLIDA, justificando.\n\nCláusula: \"[COLAR CLÁUSULA DO CONTRATO]\"",
     category: Category.ANALYSIS,
     tags: ['Imobiliário', 'Step-Back', 'Compliance'],
-    complexity: 'Avançado',
+    complexity: Complexity.Avançado,
   },
   {
     id: '4',
@@ -94,7 +94,7 @@ export const PROMPTS: Prompt[] = [
     content: "Role: Advogado especialista em Customer Success.\nTarefa: Explicar uma decisão de 'Tutela Antecipada' para um cliente leigo.\n\nEstilo de Escrita:\n- Tom: Empático, tranquilizador e extremamente didático.\n- Use analogias simples.\n- Evite termos técnicos (se usar, explique entre parênteses).\n\nVariável do Caso:\n{DECISÃO} = O juiz concedeu o medicamento solicitado, mas deu 5 dias para o Estado cumprir.\n\nEscreva o e-mail.",
     category: Category.CLIENT_COMMS,
     tags: ['Comunicação', 'Soft Skills', 'Estilo'],
-    complexity: 'Iniciante',
+    complexity: Complexity.Iniciante,
   },
   {
     id: '104',
@@ -103,7 +103,7 @@ export const PROMPTS: Prompt[] = [
     content: "Adote o papel de um cronologista de litígios de elite — um ex-procurador federal que passou 15 anos dissecando conspirações e descobrindo padrões no caos documental. Sua missão: Transformar montanhas de documentos em uma cronologia factual de precisão cirúrgica que será a espinha dorsal de uma estratégia de julgamento.\n\nPense passo a passo:\n1. Faça uma varredura por âncoras temporais;\n2. Identifique os atores principais e suas motivações;\n3. Extraia momentos cruciais que mudam a narrativa;\n4. Encontre as lacunas que revelam o que está sendo escondido.\n\nAdapte sua abordagem baseada:\n* Na complexidade do caso e volume de documentos\n* Na urgência e cronograma do julgamento\n* No tipo de litígio (comercial, regulatório, ação coletiva)\n\nResponda com as perguntas da FASE 1:\n1. Qual é o tipo do caso?\n2. Quantos documentos aproximadamente precisam de revisão?\n3. Qual é o cerne da disputa?\n4. Qual é o cronograma e a urgência?",
     category: Category.ANALYSIS,
     tags: ['Pesquisa', 'Descoberta', 'Cronologia'],
-    complexity: 'Avançado',
+    complexity: Complexity.Avançado,
     isNew: true,
   },
   {
@@ -113,7 +113,7 @@ export const PROMPTS: Prompt[] = [
     content: "Atue como um advogado de contratos de alto nível com mais de 25 anos de experiência. Seu objetivo é redigir um aditivo contratual abrangente, modificando acordos existentes sem criar ambiguidades, brechas ou consequências indesejadas, tudo isso na estrutura de um documento legal profissional.\n\nAja com precisão legal, indicando explicitamente quais seções estão sendo adicionadas, alteradas ou excluídas.\n\nINFORMAÇÕES SOBRE O MEU CASO:\n- Título do contrato original, data e partes: [INSERIR]\n- Seções específicas a alterar: [INSERIR]\n- Razão comercial da alteração: [INSERIR]\n- Novos termos: [INSERIR]\n- Lei regente / Foro: [INSERIR]\n\nEstruture sua resposta usando a formatação adequada de documentos legais, com seções numeradas, e inclua tanto o texto do aditivo quanto um guia contextual para o cliente.",
     category: Category.LEGAL_DRAFTING,
     tags: ['Contratos', 'Aditivos', 'Negociação'],
-    complexity: 'Intermediário',
+    complexity: Complexity.Intermediário,
     isNew: true,
   },
   {
@@ -123,7 +123,7 @@ export const PROMPTS: Prompt[] = [
     content: "Assuma o papel de um advogado de direito imobiliário comercial de elite. Seu objetivo é realizar uma análise cirúrgica e abrangente de um contrato de locação comercial.\n\nAvalie os riscos, teste cenários financeiros e encontre armadilhas escondidas (cláusulas de escalonamento, penalidades, garantias abusivas).\n\nPara cada provisão problemática, forneça: o texto exato do problema, o impacto financeiro, um cenário de risco real e a proposta de linguagem para negociação (redline).\n\nINFORMAÇÕES:\n- O contrato de locação a analisar: [COLE O CONTRATO]\n- Tipo do meu negócio: [INSERIR]\n- Localização/Mercado: [INSERIR]\n- Restrições de orçamento: [INSERIR]\n\nFormate sua análise como um memorando legal, usando cores de risco (🔴 VERMELHO / 🟡 AMARELO / 🟢 VERDE) e tabelas financeiras claras.",
     category: Category.ANALYSIS,
     tags: ['Auditoria', 'Imobiliário', 'Riscos'],
-    complexity: 'Avançado',
+    complexity: Complexity.Avançado,
     isNew: true,
   },
   {
@@ -133,7 +133,7 @@ export const PROMPTS: Prompt[] = [
     content: "Assuma o papel de 'Arquiteto de Aprendizado' e utilize a Técnica de Feynman. Você transforma a complexidade impenetrável em clareza intuitiva, quebrando tópicos em partes que até uma criança entenderia.\n\nAja passo a passo: qual é a maneira mais simples e precisa de explicar isso? Qual analogia do cotidiano capta a essência? Onde pode surgir confusão?\n\nDIRETRIZES:\n1. Eu irei lhe passar o tópico. Você criará uma explicação inicial simples usando analogias.\n2. Analise a explicação e guie o usuário em ciclos de refinamento e perguntas.\n3. Teste o domínio do tema elaborando um cenário real no final.\n\nINFORMAÇÕES SOBRE MIM:\n- Tópico a dominar: [INSERIR TÓPICO]\n- Meu nível atual (Inciante/Intermediário/Avançado): [INSERIR]\n- Meu objetivo de aprendizado: [O QUE QUERO FAZER COM ISSO]\n\nInicie a primeira fase fazendo perguntas e não entregue tudo de uma vez. Valide meu entendimento a cada passo.",
     category: Category.EXAM_PREP,
     tags: ['Técnica Feynman', 'Estudos', 'Compreensão'],
-    complexity: 'Iniciante',
+    complexity: Complexity.Iniciante,
     isNew: true,
   },
   {
@@ -143,7 +143,7 @@ export const PROMPTS: Prompt[] = [
     content: "Assuma o papel de um 'Arquiteto de Influência Cognitiva'. Seu objetivo é me ensinar os 6 princípios da influência de Cialdini pensando a partir de 'primeiros princípios' - compreendendo não apenas táticas, mas o MOTIVO evolutivo pelo qual o cérebro humano responde a esses gatilhos.\n\nPara cada um dos 6 princípios (Reciprocidade, Coerência, Prova Social, Autoridade, Afeição, Escassez), forneça sistematicamente:\n1. Desconstrução do Conceito Biológico e Mecânico\n2. Axiomas Subjacentes de como e por que o gatilho funciona\n3. Exemplos Concretos práticos para minha situação\n4. Cenários e um checklist anti-manipulação\n\nINFORMAÇÕES SOBRE MIM:\n- Nível de conhecimento atual: [INICIANTE/AVANÇADO]\n- Contexto onde aplicarei o princípio: [NEGÓCIOS / PESSOAL / TRIBUNAL]\n- Limites ou receios éticos: [INSERIR, SE HOUVER]\n\nComece detalhando o primeiro princípio após ler minhas metas acima e me teste.",
     category: Category.EXAM_PREP,
     tags: ['Psicologia', 'Negociação', 'Influência'],
-    complexity: 'Intermediário',
+    complexity: Complexity.Intermediário,
     isNew: true,
   },
   {
@@ -153,7 +153,7 @@ export const PROMPTS: Prompt[] = [
     content: "Adote o papel de um especialista em pesquisa jurídica com ampla experiência. Seu objetivo é gerar uma matriz de jurisprudência abrangente que mapeie o cenário de precedentes, identifique a autoridade controladora, extraia linguagem persuasiva e forneça a estrutura estratégica para construir argumentos legais vencedores.\n\nINFORMAÇÕES SOBRE O CASO:\n- Questões jurídicas a pesquisar: [INSERIR]\n- Jurisdição/Tribunal de controle: [INSERIR]\n- Contexto processual / tipo de peça: [INSERIR]\n- Fatos e nuances a enfatizar: [INSERIR]\n- Resumo dos fatos do cliente: [INSERIR]\n\nEstruture a saída nestas seções: (1) Visão Geral, (2) Matriz de Precedentes Vinculantes (em formato de tabela), (3) Autoridade Persuasiva, (4) Análise de Jurisprudência Contrária, (5) Síntese do Padrão Fático e (6) Recomendações Estratégicas para a redação.",
     category: Category.LEGAL_DRAFTING,
     tags: ['Jurisprudência', 'Precedentes', 'Matriz'],
-    complexity: 'Avançado',
+    complexity: Complexity.Avançado,
     isNew: true,
   },
   {
@@ -163,7 +163,7 @@ export const PROMPTS: Prompt[] = [
     content: "Adote o papel de 'Arquiteto de Pensamento Estratégico'. Sua missão é expandir meu pensamento através de diferentes dimensões (largura, profundidade, altitude, raízes culturais) - não para resolver o problema por mim, mas para dissolver as paredes invisíveis que restringem minha visão.\n\nRegra principal: O pensamento genial é continuar investigando quando a mente quer parar e buscar uma resposta rápida.\n\nTrabalharemos em fases, UMA de cada vez. Não me faça todas as perguntas juntas. \n\nInicie agora se apresentando brevemente e executando a FASE 1: pergunte qual problema estou lidando atualmente, o que já tentei e qual o impacto real dele, pedindo a versão 'bagunçada e sem filtro'. Aguarde minha resposta.",
     category: Category.ANALYSIS,
     tags: ['Soft Skills', 'Resolução de Problemas', 'Reflexão'],
-    complexity: 'Intermediário',
+    complexity: Complexity.Intermediário,
     isNew: true,
   }
 ];

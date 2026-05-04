@@ -4,18 +4,35 @@ export enum Category {
   LEGAL_DRAFTING = 'Redação Jurídica',
   ANALYSIS = 'Análise de Documentos',
   ADMINISTRATIVE = 'Administrativo',
-  CLIENT_COMMS = 'Atendimento ao Cliente'
+  CLIENT_COMMS = 'Atendimento ao Cliente',
+}
+
+export enum Complexity {
+  Iniciante = 'Iniciante',
+  Intermediário = 'Intermediário',
+  Avançado = 'Avançado',
+}
+
+export interface Category_ {
+  id: string;
+  name: string;
+  icon: string;
 }
 
 export interface Prompt {
   id: string;
   title: string;
   description: string;
-  content: string; // The actual prompt text
+  content: string;
   category: Category;
   tags: string[];
-  complexity: 'Iniciante' | 'Intermediário' | 'Avançado';
+  complexity: Complexity;
   isNew?: boolean;
+}
+
+export interface PromptTag {
+  prompt_id: string;
+  tag: string;
 }
 
 export interface FilterState {
@@ -27,7 +44,7 @@ export interface FilterState {
 export type ToastType = 'success' | 'error' | 'info';
 
 export interface ToastMessage {
-  id: number;
+  id: string;
   message: string;
   type: ToastType;
 }
