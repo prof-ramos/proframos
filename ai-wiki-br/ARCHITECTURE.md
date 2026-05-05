@@ -47,15 +47,42 @@ The project is an AI-powered React Single Page Application (SPA) built with Vite
 **Purpose:** Provides generative AI capabilities for the interactive playground so users can test prompts.
 **Integration Method:** Node/Browser SDK (`@google/genai`).
 
+### External Integrations
+
+- **Supabase** — PostgreSQL database (prompts, categories, tags) + Edge Functions (Gemini proxy)
+- **Vercel** — Hosting; connected via Supabase Vercel integration for automatic env var sync
+- **Gemini API** — AI generation (accessed only via Supabase Edge Function)
+
 ## 6. Deployment & Infrastructure
 
 **Cloud Provider:** Google Cloud Platform (GCP) via Google Cloud Run (managed by AI Studio).
 **CI/CD Pipeline:** Handled transparently by AI Studio Build.
 
+## Deployment
+
+Hosted on **Vercel**. Build command: `npm run build`. Output dir: `dist`.
+
+Environment variables required in Vercel dashboard:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+These are auto-synced via the Supabase Vercel integration.
+
 ## 7. Security Considerations
 
-**API Key Management:** The `GEMINI_API_KEY` is currently injected into the client environment via `vite.config.ts` for prototype/preview functionality. 
-*Note: For a production standalone deployment, this should be moved to a backend proxy or serverless function to avoid exposing the key, unless the app relies on user-provided keys.*
+## API Key Management
+
+All Gemini API calls are proxied through a **Supabase Edge Function** (`supabase/functions/generate/`). The `GEMINI_API_KEY` is stored as a Supabase secret and never reaches the browser. The SPA only holds the public `VITE_SUPABASE_ANON_KEY`, which is safe to expose.
+
+### Data Flow
+
+```
+[Browser SPA]
+  ↓ supabase.functions.invoke('generate', { body })
+[Supabase Edge Function — Deno]
+  ↓ GoogleGenAI({ apiKey: Deno.env.get('GEMINI_API_KEY') })
+[Gemini API]
+```
 
 ## 8. Development & Testing Environment
 

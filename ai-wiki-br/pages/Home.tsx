@@ -1,15 +1,18 @@
 import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react';
-import { Search, LayoutGrid, List as ListIcon, Menu, X, Github, Linkedin, Mail, Sparkles, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { PROMPTS, CATEGORY_ICONS } from '../constants';
-import { Category, FilterState, Prompt, ToastMessage } from '../types';
+import { Search, LayoutGrid, List as ListIcon, Sparkles, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CATEGORY_ICONS } from '../constants';
+import { Category, FilterState, Prompt } from '../types';
+import { supabase } from '../services/supabase';
 
 // Lazy loaded components
 const PromptCard = lazy(() => import('../components/PromptCard'));
 const PlaygroundModal = lazy(() => import('../components/PlaygroundModal'));
 
 interface HomeProps {
-  addToast: (message: string, type?: 'success' | 'error' | 'info') => void;
+  addToast: (message: string, type: 'success' | 'error' | 'info') => void;
 }
+
+const ITEMS_PER_PAGE = 10;
 
 export default function Home({ addToast }: HomeProps) {
   // State
@@ -21,7 +24,35 @@ export default function Home({ addToast }: HomeProps) {
   const [playgroundOpen, setPlaygroundOpen] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10;
+  const [prompts, setPrompts] = useState<Prompt[]>([]);
+  const [isLoadingPrompts, setIsLoadingPrompts] = useState(true);
+
+  useEffect(() => {
+    async function fetchPrompts() {
+      setIsLoadingPrompts(true);
+      const { data, error } = await supabase
+        .from('prompts')
+        .select('*, categories(name), prompt_tags(tag)');
+      if (!error && data) {
+        setPrompts(
+          data.map((row: any) => ({
+            id: row.id,
+            title: row.title,
+            description: row.description,
+            content: row.content,
+            category: (row.categories?.name as Category) ?? Category.ALL,
+            tags: (row.prompt_tags ?? []).map((t: any) => t.tag),
+            complexity: row.complexity,
+            isNew: row.is_new,
+          }))
+        );
+      } else if (error) {
+        addToast('Erro ao carregar prompts. Tente recarregar a página.', 'error');
+      }
+      setIsLoadingPrompts(false);
+    }
+    fetchPrompts();
+  }, []);
 
   // Logic: Filtering
   const filteredPrompts = useMemo(() => {
@@ -39,7 +70,7 @@ export default function Home({ addToast }: HomeProps) {
       .filter(term => !term.toLowerCase().startsWith('tag:'))
       .map(normalizeString);
 
-    return PROMPTS.filter((prompt) => {
+    return prompts.filter((prompt) => {
       const normalizedTitle = normalizeString(prompt.title);
       const normalizedDescription = normalizeString(prompt.description);
       const normalizedTags = prompt.tags.map(normalizeString);
@@ -60,7 +91,7 @@ export default function Home({ addToast }: HomeProps) {
 
       return matchesTags && matchesGeneral && matchesCategory;
     });
-  }, [filter.search, filter.category]);
+  }, [filter.search, filter.category, prompts]);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -86,7 +117,7 @@ export default function Home({ addToast }: HomeProps) {
   // Handlers
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);
-    addToast('Prompt copiado para a área de transferência!');
+    addToast('Prompt copiado para a área de transferência!', 'success');
   };
 
   const handleOpenPlayground = (prompt: Prompt) => {
@@ -193,32 +224,51 @@ export default function Home({ addToast }: HomeProps) {
         </div>
 
         {/* Grid/List Display */}
-        {filteredPrompts.length > 0 ? (
-          <Suspense fallback={
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="w-10 h-10 animate-spin text-accent/50" />
-            </div>
-          }>
-            <div className={`grid ${filter.viewMode === 'list' ? 'gap-4' : 'gap-6'} ${
-              filter.viewMode === 'grid' 
-                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-                : 'grid-cols-1 max-w-4xl mx-auto'
-            }`}>
-              {displayedPrompts.map((prompt) => (
-                <PromptCard 
-                  key={prompt.id} 
-                  prompt={prompt} 
-                  onCopy={handleCopy}
-                  onOpenPlayground={handleOpenPlayground}
-                  viewMode={filter.viewMode}
-                />
-              ))}
-            </div>
-            
+        {isLoadingPrompts ? (
+          <div className="flex justify-center items-center py-24">
+            <Loader2 className="w-8 h-8 animate-spin text-accent" />
+          </div>
+        ) : filteredPrompts.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-xl border border-dashed border-legal-300">
+            <Search className="w-12 h-12 text-legal-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-legal-900">Nenhum prompt encontrado</h3>
+            <p className="text-legal-500">Tente ajustar seus filtros ou termos de busca.</p>
+            <button
+              onClick={() => setFilter({ search: '', category: Category.ALL, viewMode: 'grid' })}
+              className="mt-4 text-accent hover:underline font-medium"
+            >
+              Limpar filtros
+            </button>
+          </div>
+        ) : (
+          <>
+            <Suspense fallback={
+              <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-10 h-10 animate-spin text-accent/50" />
+              </div>
+            }>
+              <div className={`grid ${filter.viewMode === 'list' ? 'gap-4' : 'gap-6'} ${
+                filter.viewMode === 'grid'
+                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                  : 'grid-cols-1 max-w-4xl mx-auto'
+              }`}>
+                {displayedPrompts.map((prompt) => (
+                  <PromptCard
+                    key={prompt.id}
+                    prompt={prompt}
+                    onCopy={handleCopy}
+                    onOpenPlayground={handleOpenPlayground}
+                    viewMode={filter.viewMode}
+                    addToast={addToast}
+                  />
+                ))}
+              </div>
+            </Suspense>
+
             {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="mt-12 flex justify-center items-center gap-4">
-                <button 
+                <button
                   onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
                   className="flex items-center gap-1 px-4 py-2 rounded-lg bg-white border border-legal-200 text-legal-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-legal-50 transition-colors"
@@ -229,7 +279,7 @@ export default function Home({ addToast }: HomeProps) {
                 <div className="text-sm font-medium text-legal-600">
                   Página {currentPage} de {totalPages}
                 </div>
-                <button 
+                <button
                   onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
                   className="flex items-center gap-1 px-4 py-2 rounded-lg bg-white border border-legal-200 text-legal-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-legal-50 transition-colors"
@@ -239,19 +289,7 @@ export default function Home({ addToast }: HomeProps) {
                 </button>
               </div>
             )}
-          </Suspense>
-        ) : (
-          <div className="text-center py-20 bg-white rounded-xl border border-dashed border-legal-300">
-            <Search className="w-12 h-12 text-legal-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-legal-900">Nenhum prompt encontrado</h3>
-            <p className="text-legal-500">Tente ajustar seus filtros ou termos de busca.</p>
-            <button 
-              onClick={() => setFilter({ search: '', category: Category.ALL, viewMode: 'grid' })}
-              className="mt-4 text-accent hover:underline font-medium"
-            >
-              Limpar filtros
-            </button>
-          </div>
+          </>
         )}
       </main>
 

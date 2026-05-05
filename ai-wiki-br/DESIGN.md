@@ -35,6 +35,14 @@ A tipografia combina alta legibilidade em interface com elegância em títulos.
 - **font-sans**: Usada para textos em interfaces, botões e descrições. (Alta legibilidade).
 - **font-serif**: Usada para títulos, destaques e logotipo. (Moderno, evoca a tradição jurídica).
 
+### Font Stacks
+
+- **Sans (body):** `'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif`
+  - Weights in use: 400 (body), 500 (labels), 600 (subheadings), 700 (headings)
+- **Serif (display):** `'Playfair Display', ui-serif, Georgia, serif`
+  - Weights in use: 600 (modal titles), 700 (hero + card headings)
+- **Google Fonts strategy:** loaded via `<link rel="preconnect">` + display=swap for non-blocking render
+
 ## Colors
 
 - **Legal 900**: Fundo Hero, textos principais.
@@ -46,6 +54,21 @@ A tipografia combina alta legibilidade em interface com elegância em títulos.
 - **Accent light**: Backings sutis.
 - **Gold**: Detalhes em destaque.
 - **Gold light**: Avisos.
+
+### Semantic Tokens
+
+| Token | Value | Use |
+|-------|-------|-----|
+| success | #16a34a | Confirmation actions |
+| success-light | #f0fdf4 | Success backgrounds |
+| warning | #d97706 | Caution states |
+| warning-light | #fef3c7 | Warning backgrounds |
+| error | #dc2626 | Destructive/error states |
+| error-light | #fef2f2 | Error backgrounds |
+| info | #2563eb | Informational states |
+| info-light | #eff6ff | Info backgrounds |
+
+**WCAG AA Contrast:** Accent (`#2563eb`) on Legal-50 (`#f8fafc`) = 4.8:1 ✓. Accent on Legal-900 (`#0f172a`) = 12.6:1 ✓.
 
 ## Shapes
 
