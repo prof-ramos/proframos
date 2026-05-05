@@ -1,12 +1,12 @@
-import { supabase } from './supabase';
-
 export const generateCompletion = async (
   modelName: string,
   promptText: string
 ): Promise<string> => {
-  const { data, error } = await supabase.functions.invoke('generate', {
-    body: { model: modelName, prompt: promptText },
+  const response = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: modelName, prompt: promptText }),
   });
-  if (error) throw new Error('Falha ao comunicar com a IA.');
-  return data as string;
+  if (!response.ok) throw new Error('Falha ao comunicar com a IA.');
+  return response.text();
 };

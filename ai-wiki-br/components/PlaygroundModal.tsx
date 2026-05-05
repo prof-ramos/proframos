@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { X, Sparkles, Loader2, Copy, Check } from 'lucide-react';
 import { Prompt } from '../types';
 import { generateCompletion } from '../services/geminiService';
-import { supabase } from '../services/supabase';
 
 interface PlaygroundModalProps {
   isOpen: boolean;
@@ -22,9 +21,11 @@ const PlaygroundModal: React.FC<PlaygroundModalProps> = ({ isOpen, onClose, prom
     if (isOpen && prompt) {
       setInputContent(prompt.content);
       setResult('');
-      supabase.functions
-        .invoke('generate', { body: { model: 'gemini-2.0-flash', prompt: 'ping' } })
-        .then(({ error }) => setHasApiKey(!error));
+      fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'gemini-2.0-flash', prompt: 'ping' }),
+      }).then((r) => setHasApiKey(r.ok));
     }
   }, [isOpen, prompt]);
 
