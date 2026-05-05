@@ -10,7 +10,7 @@ create table categories (
 
 create table prompts (
   id          uuid primary key default gen_random_uuid(),
-  title       text not null,
+  title       text not null unique,
   description text not null,
   content     text not null,
   category_id uuid references categories(id) on delete set null,
